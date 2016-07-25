@@ -1,44 +1,32 @@
 <template lang="jade">
 .page
     ul
-        li(v-if="data.page !== 1", @click="prev") 上一页
-        li(:class="{ 'clickColor': data.page === 1 }", @click="click") 1
-        strong(v-if="data.page >= limit") ...
-        li(:class="{ 'clickColor': data.page === v }", v-for="v in items()", @click="click") {{ v }}
-        strong(v-if="data.pages > data.page + limit - 1") ...
-        li(:class="{ 'clickColor': data.page === data.pages}", @click="click") {{ data.pages }}
-        li(v-if="data.page !== data.pages", @click="next") 下一页
+        li(v-if="page !== 1", @click="prev") 上一页
+        li(:class="{ 'clickColor': page === 1 }", @click="click") 1
+        strong(v-if="page >= limit") ...
+        li(:class="{ 'clickColor': page === v }", v-for="v in items()", @click="click") {{ v }}
+        strong(v-if="allPages > page + limit - 1") ...
+        li(:class="{ 'clickColor': page === allPages}", @click="click") {{ allPages }}
+        li(v-if="page !== allPages", @click="next") 下一页
     .jump
-        span 共{{ data.pages }}页,跳到
+        span 共{{ allPages }}页,跳到
         input.form-control(@keyup.enter="enter")
         | 页
 </template>
 <script>    
 export default {
-    route: {
-        data (transition) {
-            return {
-                params: transition.to.params
-            }
-        }
-    },
+    props: ['allPages', 'page'],
     data () {
         return {
             limit: 4, //必须偶数
         }
     },
     computed: {
-        data () {
-            return {
-                page: Number(this.$route.params.page),
-                pages: 11,
-            }
-        },
         items () {
             //根据limit获取中间页码,limit/2代表当前页左右显示的页数,比如limit/2 = 2, 当前页5，中间显示的页码就为 3,4,5,6,7
             return () => {
-                let page = this.data.page,
-                    pages = this.data.pages,
+                let page = this.page,
+                    pages = this.allPages,
                     temp = [],
                     count = 0, 
                     fixLength = this.limit/2,
@@ -69,10 +57,10 @@ export default {
     },
     methods: {
         prev () {
-            this.$router.go({path: this.data.page - 1});
+            this.$router.go({path: this.page - 1});
         },
         next () {
-            this.$router.go({path: this.data.page + 1});
+            this.$router.go({path: this.page + 1});
         },
         click (e) {
             var id = e.target.textContent;
@@ -80,7 +68,7 @@ export default {
         },
         enter (e) {
             var page = e.target.value;
-            if (page > 0 && page <= this.data.pages)
+            if (page > 0 && page <= this.allPages)
             this.$router.go({path: page});
         }
     }
@@ -133,6 +121,7 @@ export default {
     color:#fff;
 }
 </style>
+
 
 
 
