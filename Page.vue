@@ -1,75 +1,94 @@
-<template lang="jade">
+<template lang="pug">
 .page
     ul
-        li(v-if="page !== 1", @click="prev") 上一页
+        li(v-if="page !== 1", @click="prev") 上一页 
         li(:class="{ 'clickColor': page === 1 }", @click="click") 1
-        strong(v-if="page >= limit") ...
+        strong(v-if="front") ...
         li(:class="{ 'clickColor': page === v }", v-for="v in items()", @click="click") {{ v }}
-        strong(v-if="allPages > page + limit - 1") ...
-        li(:class="{ 'clickColor': page === allPages}", @click="click") {{ allPages }}
+        strong(v-if="back") ...
+        li(v-if="allPages !== 1", :class="{ 'clickColor': page === allPages}", @click="click") {{ allPages }}
         li(v-if="page !== allPages", @click="next") 下一页
     .jump
         span 共{{ allPages }}页,跳到
         input.form-control(@keyup.enter="enter")
         | 页
 </template>
-<script>    
+<script>
 export default {
     props: ['allPages', 'page'],
     data () {
         return {
-            limit: 4, //必须偶数
+            limit: 4,
+            front: false,
+            back: false,
+            dataPages: '',
+            dataPage: ''
         }
     },
     computed: {
         items () {
-            //根据limit获取中间页码,limit/2代表当前页左右显示的页数,比如limit/2 = 2, 当前页5，中间显示的页码就为 3,4,5,6,7
             return () => {
-                let page = this.page,
-                    pages = this.allPages,
-                    temp = [],
-                    count = 0, 
-                    fixLength = this.limit/2,
-                    sideLength = -fixLength,
-                    loopTime = fixLength * 2 + 1;
-                for (; loopTime > 0; loopTime--, count++, sideLength++) {
-                    if ( count < fixLength ) {
-                        if ( page + sideLength > 1 ) {
-                            temp.push(page + sideLength);
+                let page = this.page - 0
+                let pages = this.allPages - 0
+                let limit = this.limit - 0
+                let temp = []
+                if (limit + 2 >= pages) {
+                    this.front = false
+                    this.back = false
+                    for (let i = 2; pages - 2 > 0; pages--, i++) {
+                        temp.push(i)
+                    }
+                } else {
+                    if (page + limit / 2 >= pages) {
+                        this.front = true
+                        this.back = false
+                        for (let i = 0; i < limit; i++, pages--) {
+                            temp.unshift(pages - 1)
                         }
-                    } else if ( count === fixLength ) {
-                        temp.push(page);
+                    } else if (page - limit / 2 <= 2) {
+                        this.front = false
+                        this.back = true
+                        for (let i = 0, j = 2; i < limit; i++, j++) {
+                            temp.push(j)
+                        }
                     } else {
-                        if ( page + sideLength < pages ) {
-                            temp.push(page + sideLength);
+                        this.front = true
+                        this.back = true
+                        for (let i = 0; i < limit; i++, page++) {
+                            temp.push(page - 2)
                         }
                     }
                 }
-                if (page === 1){
-                    temp.shift();
-                }
-                if (page === pages){
-                    temp.pop();
-                }
-                return temp;  
+                return temp
             }
         }
     },
     methods: {
         prev () {
-            this.$router.go({path: this.page - 1});
+            this.dataPage = this.dataPage - 1
         },
         next () {
-            this.$router.go({path: this.page + 1});
+            this.dataPage = this.dataPage + 1
         },
         click (e) {
-            var id = e.target.textContent;
-            this.$router.go({path: id});
+            this.dataPage = e.target.textContent - 0
         },
         enter (e) {
-            var page = e.target.value;
-            if (page > 0 && page <= this.allPages)
-            this.$router.go({path: page});
+            var dataPage = e.target.value - 0
+            if (dataPage > 0 && dataPage <= this.dataPages) {
+                this.dataPage = dataPage
+            }
+        }
+    },
+    watch: {
+        page: function () {
+            this.dataPage = this.page
+        },
+        allPages: function () {
+            this.dataPages = this.allPages
+        },
+        dataPage: function (page) {
+            this.$emit('changePage', page + '')
         }
     }
 }
@@ -121,9 +140,3 @@ export default {
     color:#fff;
 }
 </style>
-
-
-
-
-
-
