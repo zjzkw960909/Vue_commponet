@@ -9,7 +9,7 @@ Vue.component('page', {
                     {
                         this.tempPages.map((v, k) => {
                             if (v - 0 > 0) {
-                                return <li onClick={this.jump} class={k + 1 === this.nowPage ? "active": ""}>
+                                return <li onClick={this.jump} class={v === this.nowPage ? "active": ""}>
                                     <a href="javascript:void(0);">{v}</a>
                                 </li>
                             } else {

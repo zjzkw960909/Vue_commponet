@@ -1,7 +1,7 @@
 html
     head
         meta(charset="utf-8" name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no")
-        link(rel="stylesheet", href="http://cdn.bootcss.com/bootstrap/3.3.1/css/bootstrap.css")
+        link(rel="stylesheet", href="http://v3.bootcss.com/dist/css/bootstrap.min.css")
         link(rel="stylesheet", href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css")
         link(rel="stylesheet", href="../static/base.css")
     body

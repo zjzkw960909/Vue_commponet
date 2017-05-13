@@ -32,7 +32,7 @@ Vue.component('page', {
                                 on: {
                                     "click": _this.jump
                                 },
-                                "class": k + 1 === _this.nowPage ? "active" : "" },
+                                "class": v === _this.nowPage ? "active" : "" },
                             [h(
                                 "a",
                                 {
