@@ -93,7 +93,7 @@ Vue.component('page', {
                     }
                     return v
                 })
-            } else if (this.nowPage + this.limit * 2 >= this.nowPages) { //省略号在左边
+            } else if (this.nowPage + this.limit * 2 + 1 >= this.nowPages) { //省略号在左边
                 this.tempPages = Array.from({length: this.max + 1}, (v, k) => {
                     if (k + 1 <= this.limit * 1 + 1) {
                         v = k + 1
