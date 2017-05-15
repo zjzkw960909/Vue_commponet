@@ -44,17 +44,26 @@ Vue.component('page', {
         }
     },
     mounted () {
-        this.nowPage = this.page
-        this.nowPages = this.pages
-        this.max = this.limit * 4 + 3
-        this.initPage()
+        this.init()
     },
     watch: {
+        pages () {
+            this.init()
+        },
+        page () {
+            this.init()
+        },
         nowPage (e){
             this.$emit('emit', e)
         }
     },
     methods: {
+        init () {
+            this.nowPage = this.page
+            this.nowPages = this.pages
+            this.max = this.limit * 4 + 3
+            this.initPage()
+        },
         prev () {
             if (this.nowPage > 1) {
                 this.nowPage --
