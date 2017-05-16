@@ -10,7 +10,7 @@ Vue.component('form-search', {
                     if (v.length) {
                         let key = v[0].key  || 1
                         return  <div class="btn-group">
-                                    <button onClick={this.open} k={k + 1} class={["btn btn-sm dropdown-toggle", v[key].value === this.select ? 'btn-info' : 'btn-default']} type="button" value={v[key].value}>
+                                    <button onClick={this.open} k={k + 1} class={["btn btn-sm dropdown-toggle", v[key].opts.value === this.select ? 'btn-info' : 'btn-default']} type="button" value={v[key].opts.value} keyName={v.opts.key}>
                                         <span class={["glyphicon", v[key].icon]}></span>{v[key].name}
                                         <span class="caret"></span>
                                     </button>
@@ -18,7 +18,7 @@ Vue.component('form-search', {
                                     {
                                         v.map((v1, k1) => {
                                             return  <li v-show={k1 !== 0}>
-                                                    <a href="javascript:void(0)" onClick={this.btnClick} value={v1.value} k={k1}>
+                                                    <a href="javascript:void(0)" onClick={this.btnClick} value={v1.opts.value} keyName={v1.opts.key} k={k1}>
                                                         <span class={["glyphicon", v1.icon]}></span> {v1.name}
                                                     </a>
                                                 </li>
@@ -27,7 +27,7 @@ Vue.component('form-search', {
                                     </ul>
                                 </div>
                     } else {
-                        return  <button onClick={this.btnClick} class={["btn btn-sm", v.value === this.select ? 'btn-info' : 'btn-default']} type="button" value={v.value}>
+                        return  <button onClick={this.btnClick} class={["btn btn-sm", v.opts.value === this.select ? 'btn-info' : 'btn-default']} type="button" value={v.opts.value} keyName={v.opts.key}>
                                 <span class={["glyphicon", v.icon]}></span> {v.name}
                             </button>
                     
@@ -39,7 +39,7 @@ Vue.component('form-search', {
     },
     data () {
         return {
-            select: 1,
+            select: 0,
             openStatus: null,
             operateOptions: []
         }
@@ -72,16 +72,17 @@ Vue.component('form-search', {
             }
         },
         btnClick (e) {
-            let value,
+            let value, key,
                 target = e.target
 
             if (target.value || target.parentElement.value) {
                 value = (target.value  || target.parentElement.value) - 0
             } else {
-                value = (target.getAttribute('value') || target.parentElement.getAttribute('value'))- 0
+                value = (target.getAttribute('value') || target.parentElement.getAttribute('value')) - 0
             }
+            key = (target.getAttribute('keyName') || target.parentElement.getAttribute('keyName'))
             this.select = value
-            this.$emit('emit', value)
+            this.$emit('emit', {key: key, value: value})
             if (this.openStatus) {
                 this.operateOptions[this.openStatus - 1][0].key = target.getAttribute('k') || target.parentElement.getAttribute('k')
                 this.openStatus = null
